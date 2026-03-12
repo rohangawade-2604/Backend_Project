@@ -45,7 +45,7 @@ router.get("/hierarchy/:id", async (req, res) => {
     //--------- if FLM object id get here
     if (data) {
       role = "FLM";
-      return res.json({ role, data });
+      return res.json({ role, data })
     }
     // check for the MR
     data = await Mr.findById(id);
@@ -62,7 +62,7 @@ router.get("/hierarchy/:id", async (req, res) => {
       success: true,
       data,
     });
-    
+
   } catch (error) {
     res.status(500).json({
       error: error.message,
