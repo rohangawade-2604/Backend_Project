@@ -3,7 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose"); // 1. Added mongoose import
 const dns = require('dns');
-const hierarchyRoute  = require("./Routes/hierarchyRoute")
+const hierarchyRoute  = require("./src/Routes/hierarchyRoute")
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 

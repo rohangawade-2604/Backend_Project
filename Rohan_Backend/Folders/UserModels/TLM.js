@@ -2,40 +2,50 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 /* ----------- TLM ----------- */
-const TLMSchema = new Schema({
+const TLMSchema = new Schema(
+{
   TLMID: String,
   TLMName: String,
   TLMPassword: Number,
   TLMHq: String,
-  TLMZone: String
-});
+  TLMZone: String,
+  slm: [{
+    type: Schema.Types.ObjectId,
+    ref: "Slms"
+  }]
+},
+);
 
 /* ----------- SLM ----------- */
-const SLMSchema = new Schema({
+const SLMSchema = new Schema(
+{
   SLMID: String,
   SLMName: String,
   SLMPassword: Number,
   SLMHq: String,
   SLMZone: String,
-  tlm: {
+  flm: [{
     type: Schema.Types.ObjectId,
-    ref: "Tlms"
-  }
-});
+    ref: "Flms"
+  }]
+},
+);
 
 /* ----------- FLM ----------- */
-const FLMSchema = new Schema({
+const FLMSchema = new Schema(
+{
   FLMID: String,
   FLMName: String,
   FLMPassword: Number,
   FLMHq: String,
   FLMZone: String,
   FLMRegion: String,
-  slm: {
+  Mr: [{
     type: Schema.Types.ObjectId,
-    ref: "Slms"
-  }
-});
+    ref: "Mrs"
+  }]
+},
+);
 
 /* ----------- MR ----------- */
 const MRSchema = new Schema({
@@ -44,10 +54,6 @@ const MRSchema = new Schema({
   MRPassword: Number,
   MRHq: String,
   MRZone: String,
-  flm: {
-    type: Schema.Types.ObjectId,
-    ref: "Flms"
-  }
 });
 
 /* ----------- Models ----------- */

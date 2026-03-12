@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const {upload} = require("../Middleware/upload")
+// const {upload} = require("../../Middleware/upload") 
+const {upload} = require("../../Folders/Middleware/upload")
 const {uploadHierarchyExcel} = require("../Controller/hierarchy")
-const { Mr } = require("../UserModels/TLM");
+// const { Mr } = require("../../UserModels/TLM");
+const {Tlm} = require("../../Folders/UserModels/TLM")
 
 router.post("/upload-excel", upload.single("file"), uploadHierarchyExcel);
 
@@ -10,13 +12,13 @@ router.post("/upload-excel", upload.single("file"), uploadHierarchyExcel);
 router.get("/hierarchy", async (req, res) => {
   try {
 
-    const data = await Mr.find()
+    const data = await Tlm.find()
       .populate({
-        path: "flm",
+        path: "slms",
         populate: {
-          path: "slm",
+          path: "flms",
           populate: {
-            path: "tlm"
+            path: "mrs"
           }
         }
       });
