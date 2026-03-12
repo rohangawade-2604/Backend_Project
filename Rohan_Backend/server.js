@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose"); // 1. Added mongoose import
 const dns = require('dns');
 const hierarchyRoute  = require("./src/Routes/hierarchyRoute")
+const loginroutes = require("./src/Routes/loginroute")
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
@@ -14,6 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api", hierarchyRoute)
+app.use("/api", loginroutes)
 
 
 app.get("/", (req, res) => {
