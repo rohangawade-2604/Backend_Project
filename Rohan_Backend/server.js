@@ -37,9 +37,9 @@ app.listen(PORT, async () => {
         await mongoose.connect(process.env.MONGO_URL, {
             family: 4, 
         });
-        console.log("Saat Crore..!!! ");
+        console.log("Saat Crore..!!! ✅ ");
     } catch (error) {
-        console.log("Gadbad hogaya re Baba..!!!!");
+        console.log("❌ Gadbad hogaya re Baba..!!!! ⚠️ ");
         console.log(error, "error occurs");
     }
 });
