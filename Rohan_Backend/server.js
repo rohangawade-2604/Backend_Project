@@ -30,16 +30,16 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5950; 
 app.listen(PORT, async () => {
-    console.log(`Server is connected with ${PORT}`);
+    console.log(`Ye Mera Saamsuung ka ${PORT} Number hai, is pe run kr`);
     
   
     try {
         await mongoose.connect(process.env.MONGO_URL, {
             family: 4, 
         });
-        console.log("Port is running on DB connected Successfully");
+        console.log("Saat Crore..!!! ");
     } catch (error) {
-        console.log("DB connection get failed");
+        console.log("Gadbad hogaya re Baba..!!!!");
         console.log(error, "error occurs");
     }
 });
