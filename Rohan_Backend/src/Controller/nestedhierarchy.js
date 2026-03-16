@@ -1,7 +1,7 @@
 const { Tlm, Slm, Flm, Mr } = require("../../Folders/UserModels/TLM");
 
-const nestedhierarchy = async (res, req) => {
-      try {
+const nestedhierarchy = async (req, res) => {
+  try {
     const { id } = req.params;
     let data = null;
     let role = "";

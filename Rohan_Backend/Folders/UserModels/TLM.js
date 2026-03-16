@@ -2,50 +2,62 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 /* ----------- TLM ----------- */
-const TLMSchema = new Schema(
-{
+const TLMSchema = new Schema({
   TLMID: String,
   TLMName: String,
   TLMPassword: Number,
   TLMHq: String,
   TLMZone: String,
-  slm: [{
-    type: Schema.Types.ObjectId,
-    ref: "Slms"
-  }]
-},
-);
+  profile_pic: {
+    type: String,
+    default: null,
+  },
+  slm: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Slms",
+    },
+  ],
+});
 
 /* ----------- SLM ----------- */
-const SLMSchema = new Schema(
-{
+const SLMSchema = new Schema({
   SLMID: String,
   SLMName: String,
   SLMPassword: Number,
   SLMHq: String,
   SLMZone: String,
-  flm: [{
-    type: Schema.Types.ObjectId,
-    ref: "Flms"
-  }]
-},
-);
+  profile_pic: {
+    type: String,
+    default: null,
+  },
+  flm: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Flms",
+    },
+  ],
+});
 
 /* ----------- FLM ----------- */
-const FLMSchema = new Schema(
-{
+const FLMSchema = new Schema({
   FLMID: String,
   FLMName: String,
   FLMPassword: Number,
   FLMHq: String,
   FLMZone: String,
   FLMRegion: String,
-  Mr: [{
-    type: Schema.Types.ObjectId,
-    ref: "Mrs"
-  }]
-},
-);
+  profile_pic: {
+    type: String,
+    default: null,
+  },
+  Mr: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Mrs",
+    },
+  ],
+});
 
 /* ----------- MR ----------- */
 const MRSchema = new Schema({
@@ -54,6 +66,10 @@ const MRSchema = new Schema({
   MRPassword: Number,
   MRHq: String,
   MRZone: String,
+  profile_pic: {
+    type: String,
+    default: null,
+  },
 });
 
 /* ----------- Models ----------- */

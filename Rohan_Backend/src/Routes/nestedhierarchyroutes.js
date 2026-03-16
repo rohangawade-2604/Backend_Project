@@ -8,4 +8,5 @@ const {nestedhierarchy} = require("../Controller/nestedhierarchy")
 
 router.get("/hierarchy", nestedhierarchy)
 router.get("/hierarchy/:id", nestedhierarchy)
+
 module.exports = router;
