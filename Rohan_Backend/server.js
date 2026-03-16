@@ -9,6 +9,8 @@ const hierarchyRoute  = require("./src/Routes/hierarchyRoute")
 const loginroutes = require("./src/Routes/loginroute")
 const nestedhierarchyroutes = require("./src/Routes/nestedhierarchyroutes")
 const profileroute = require("./src/Routes/profileRoute")
+const fullhierarchy = require("./src/Routes/fullhierarchyroutes")
+
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
@@ -22,6 +24,7 @@ app.use("/api", hierarchyRoute)
 app.use("/api/admin", loginroutes)
 app.use("/api", nestedhierarchyroutes)
 app.use("/api", profileroute)
+app.use("/api", fullhierarchy)
 
 
 app.get("/", (req, res) => {
