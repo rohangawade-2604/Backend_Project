@@ -82,7 +82,7 @@ const uploadHierarchyExcel = async (req, res) => {
           SLMPassword: row.SLMPASSWORD,
           SLMHq: row.SLMHQ,
           SLMZone: row.SLMZONE,
-          flm: [flm._id]
+          flm: [flm._id],
         });
       }
 
