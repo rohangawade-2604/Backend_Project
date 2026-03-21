@@ -73,7 +73,7 @@ const uploadHierarchyExcel = async (req, res) => {
 
       // -------------SLM --------------
 
-      let slm = await Slm.findOne({ SLMID: row.SLMID });
+      let slm = await Slm.findOne({ SLMID: row.SLMID });;;
 
       if (!slm) {
         slm = await Slm.create({
