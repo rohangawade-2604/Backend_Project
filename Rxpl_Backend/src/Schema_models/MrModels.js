@@ -9,7 +9,7 @@ const MRSchema = new Schema({
     MRHq: String,
     MRZone: String,
     TeamName: String,
-    BussinessUnit: String,
+    BussinessUnit: String,jkds;ahf
 })
 
 const Mr = mongoose.model("Mrs", MRSchema);
