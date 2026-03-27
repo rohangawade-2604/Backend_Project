@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const dns = require('dns');
 
 const hierarchyRoute = require("./src/Routes/hierarchyRoutes")
+const MatchesRoutes  = require("./src/Routes/MatchesRoutes")
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
@@ -14,7 +15,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/api", hierarchyRoute)
+app.use("/api", hierarchyRoute);
+app.use("/api", MatchesRoutes);
 
 
 
