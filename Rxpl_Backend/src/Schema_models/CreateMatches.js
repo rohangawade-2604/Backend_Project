@@ -1,53 +1,58 @@
-const mongoose = require("mongoose")
-const {Schema} = mongoose;
-
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const MatchSchema = new Schema({
-    creatorId: {
-        type: mongoose.Schema.Types.ObjectId,
+  creatorId: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+
+  creatorRole: {
+    type: String,
+  },
+
+  teamA: String,
+  teamB: String,
+
+  startDate: String,
+  endDate: String,
+
+  roomId: {
+    type: String,
+  },
+
+  isTournament: {
+    type: Boolean,
+    default: true,
+  },
+
+  roomPlayers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Mr",
     },
+  ],
 
-    creatorRole: {
-        type: String,
+  roomPlayersA: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Mr",
     },
-
-    teamA: String,
-    teamB: String,
-
-    startDate: String,
-    EndDate: String,
-
-    roomId: {
-        type:String,
+  ],
+  roomPlayersB: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Mr",
     },
+  ],
 
-    isTournament:{
-        type: Boolean,
-        default: true
-    },
+  membersAccepted: [],
+  MatchResult: [],
 
-    roomPlayerA: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Mr",
-        }
-    ],
-    roomPlayerB: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Mr",
-        }
-    ],
+  DateofCreation: {
+    type: String,
+  },
+});
 
-    membersAccepted: [],
-    MatchResult: [],
+const CreateMatch = mongoose.model("Match", MatchSchema);
 
-    DateofCreation:{
-        type:String,
-    },
-
-})
-
-const CreateMatch = mongoose.model("Match", MatchSchema)
-
-module.exports = { CreateMatch } 
+module.exports = { CreateMatch };

@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const {upload} = require("../Middleware/upload")
 
-const {createTournamentMatches} = require("../Controllers/MatchesController");
+const {createMatchFromExcel} = require("../Controllers/MatchesController");
 
-
-router.post("/create-tournament", createTournamentMatches);
+router.post("/upload-match-excel", upload.single("file"), createMatchFromExcel);
 
 module.exports = router
