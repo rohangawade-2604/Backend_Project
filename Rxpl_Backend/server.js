@@ -4,8 +4,8 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const dns = require('dns');
 
-const hierarchyRoute = require("./src/Routes/hierarchyRoutes")
-const MatchesRoutes  = require("./src/Routes/MatchesRoutes")
+const hierarchyRoute = require("./src/Routes/hierarchyRoutes");
+const MatchesRoutes  = require("./src/Routes/MatchesRoutes");
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 

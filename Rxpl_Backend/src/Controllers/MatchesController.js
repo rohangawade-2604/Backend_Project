@@ -111,6 +111,47 @@ const createMatchFromExcel = async (req, res) => {
       });
     }
 
+    // ✅ Match Status Logic here 
+
+    const today = new Date();
+
+
+    // convert "DD-MM-YYYY" → Date
+    const convert = (d) => {
+      const [day, month, year] = d.split("-");
+      return new Date(year, month-1, day);
+    }
+
+    let activeMRs = [];
+
+    // use results OR fetch from DB
+    const allMatches = await CreateMatch.find();
+
+    allMatches.forEach((match) => {
+      const start = convert(match.startDate);
+      const end = convert(match.endDate);
+
+      if(today >= start && today <= end){
+        activeMRs.push(...match.roomPlayers);
+      }
+    });
+
+    // remove duplicates 
+    activeMRs = [...new Set(activeMRs)];
+
+    // ✅ make active → true
+    await Mr.updateMany(
+      { _id: {$in: activeMRs} },
+      { isMatchOn: true }
+    )
+
+    // ✅ make others → false
+    await Mr.updateMany(
+      { _id: {$nin: activeMRs} },
+      { isMatchOn: false }
+    )
+
+
     return res.status(200).json({
       success: true,
       message: "Matches created Successfully ",
