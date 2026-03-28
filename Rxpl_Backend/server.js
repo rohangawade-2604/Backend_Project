@@ -7,6 +7,7 @@ require("./src/Cron/Matchescron");
 
 const hierarchyRoute = require("./src/Routes/hierarchyRoutes");
 const MatchesRoutes  = require("./src/Routes/MatchesRoutes");
+const PrescriptionRoutes = require("./src/Routes/PrescriptionRoutes");
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
@@ -18,6 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api", hierarchyRoute);
 app.use("/api", MatchesRoutes);
+app.use("/api", PrescriptionRoutes);
 
 
 
