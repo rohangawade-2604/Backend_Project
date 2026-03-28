@@ -10,6 +10,11 @@ const MRSchema = new Schema({
     MRZone: String,
     TeamName: String,
     BussinessUnit: String,
+    isMatchOn: {
+        type: Boolean,
+        default: false
+    },
+
 })
 
 const Mr = mongoose.model("Mrs", MRSchema);
