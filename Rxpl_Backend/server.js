@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const dns = require('dns');
+require("./src/Cron/Matchescron");
 
 const hierarchyRoute = require("./src/Routes/hierarchyRoutes");
 const MatchesRoutes  = require("./src/Routes/MatchesRoutes");

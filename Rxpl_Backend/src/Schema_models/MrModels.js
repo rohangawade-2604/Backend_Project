@@ -14,6 +14,10 @@ const MRSchema = new Schema({
         type: Boolean,
         default: false
     },
+    roomId: {
+        type: String,
+        default: null
+    }
 
 })
 
