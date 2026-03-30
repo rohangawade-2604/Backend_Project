@@ -15,6 +15,7 @@ const MRSchema = new Schema({
   },
   roomId: {
     type: String,
+    ref: "CreateMatch",
     default: null,
   },
   uploadMatches: [
@@ -23,6 +24,20 @@ const MRSchema = new Schema({
       ref: "Prescription", // 🔥 must match model name EXACTLY
     },
   ],
+  TotalRuns: {
+    type: Number,
+    default: 0,
+  },
+
+  TotalSixes: {
+    type: Number,
+    default: 0,
+  },
+
+  TotalFours: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Mr = mongoose.model("Mrs", MRSchema);

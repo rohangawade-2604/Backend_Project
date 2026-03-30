@@ -49,7 +49,11 @@ const prescriptionSchema = new mongoose.Schema({
     {
       image: String
     }
-  ]
+  ],
+  Brand: {
+    type: String,
+    required: true
+  }
 }, { timestamps: true });
 
 // ⚠️ THIS NAME MUST MATCH 'ref'
