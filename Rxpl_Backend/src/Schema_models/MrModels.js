@@ -38,6 +38,48 @@ const MRSchema = new Schema({
     type: Number,
     default: 0,
   },
+
+  mrscoreEachMatch: [
+    {
+      matchId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "CreateMatch",
+      },
+
+      roomId: String,
+      startDate: String,
+      endDate: String,
+
+      stats: {
+        runs: {
+          type: Number,
+          default: 0,
+        },
+        sixes: {
+          type: Number,
+          default: 0,
+        },
+        fours: {
+          type: Number,
+          default: 0,
+        }
+      },
+
+      result: {
+        type: String,
+        default: null,
+      },
+
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      }
+    },
+
+    
+
+
+  ]
 });
 
 const Mr = mongoose.model("Mrs", MRSchema);

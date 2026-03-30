@@ -46,7 +46,32 @@ const MatchSchema = new Schema({
   ],
 
   membersAccepted: [],
-  MatchResult: [],
+  MatchResult: [
+    {
+      teamA: {
+        type: String
+      },
+
+      teamAScore: {
+          type: Number,
+          default: 0,
+      },
+
+      teamB: {
+        type: String
+      },
+
+      teamBScore: {
+        type: Number,
+        default: 0,
+      },
+
+      Result: {
+        type: String,
+        default: null,
+      }
+    }
+  ],
 
   DateofCreation: {
     type: String,

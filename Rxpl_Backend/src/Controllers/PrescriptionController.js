@@ -96,6 +96,8 @@ const PrescriptionController = async (req, res) => {
       });
     }
 
+
+
     // ✅ Find the Brand here to update the points
 
      const brandData = await Brand.findOne({
@@ -125,6 +127,50 @@ const PrescriptionController = async (req, res) => {
     else if(points >= 4){
       fours = Math.floor(points / 4);
     }
+
+
+        // GET MR stats for this match only here 
+
+    const playerStats = mr.mrscoreEachMatch.find(
+      (m) => m.matchId.toString() === match._id.toString()
+    );
+
+    if(playerStats) {
+      await Mr.updateOne(
+        {
+          _id: id,
+          "mrscoreEachMatch.matchId": match._id,
+        },
+        {
+          $inc: {
+            "mrscoreEachMatch.$.stats.runs": runs,
+            "mrscoreEachMatch.$.stats.sixes": sixes,
+            "mrscoreEachMatch.$.stats.fours": fours,
+          }
+        }
+      )
+    }
+    else{
+      await Mr.findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            mrscoreEachMatch: {
+              matchId: match._id,
+              roomId: match.roomId,
+              startDate: match.startDate,
+              endDate: match.endDate,
+              stats: {
+                runs, runs,
+                fours, fours,
+                sixes: sixes,
+              }
+            }
+          }
+        }
+      )
+    }
+
 
     // ✅ 5. Create Prescription
     const prescription = files.map((file) => ({
@@ -163,6 +209,50 @@ const PrescriptionController = async (req, res) => {
       { new: true },
     );
 
+
+    // Calculate Team Result on the basis Of mr 
+
+    const teamAPlayers = await Mr.find({
+      _id: { $in: match.roomPlayersA},
+    });
+
+    const teamBPlayers = await Mr.find({
+      _id: { $in: match.roomPlayersB},
+    });
+
+    const teamAScore = teamAPlayers.reduce((sum,p) => sum + (p.TotalRuns || 0 )
+    ,0);
+
+    const teamBScore = teamBPlayers.reduce((sum,p) => sum + (p.TotalRuns || 0 )
+    ,0);
+
+
+    let result = "Null";
+
+    if(teamAScore > teamBScore){
+      result = match.teamA
+    }
+    else if(teamBScore > teamAScore){
+      result = match.teamB;
+    }
+
+
+    // Now store the match result in the match collections 
+
+    await CreateMatch.findByIdAndUpdate(match._id, {
+      $set: {
+        MatchResult: {
+          teamA: match.teamA,
+          teamAScore: teamAScore,
+          teamB: match.teamB,
+          teamBScore: teamBScore,
+          Result: result,
+          date:new Date().toISOString().split("T")[0],
+        }
+      }
+    })
+
+
     // ✅ fetch FULL MR with prescription
     const updatedMR = await Mr.findById(id).populate("uploadMatches");
 
@@ -170,6 +260,15 @@ const PrescriptionController = async (req, res) => {
       success: true,
       message: "Prescription uploaded & linked to MR",
       data: savedPrescription,
+      matchResult: {
+        teamA: match.teamA,
+        teamAScore,
+        teamB: match.teamB,
+        teamBScore,
+        Result: result,
+        date: new Date().toISOString().split("T")[0],
+
+      }
     });
   } catch (error) {
     return res.status(500).json({
