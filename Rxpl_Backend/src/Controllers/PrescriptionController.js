@@ -4,6 +4,8 @@ const { Mr } = require("../Schema_models/MrModels");
 const { Brand } = require("../Schema_models/BrandModel");
 
 const PrescriptionController = async (req, res) => {
+
+  const io = req.app.get("io"); // get io instance from app
   try {
     const { id } = req.params; // ✅ MR ID
 
@@ -227,7 +229,7 @@ const PrescriptionController = async (req, res) => {
     ,0);
 
 
-    let result = "Null";
+    let result = "Draw";
 
     if(teamAScore > teamBScore){
       result = match.teamA
@@ -255,6 +257,21 @@ const PrescriptionController = async (req, res) => {
 
     // ✅ fetch FULL MR with prescription
     const updatedMR = await Mr.findById(id).populate("uploadMatches");
+
+    console.log("🔥 Emitting socket event...");
+    // Add the socket io here 
+    io.emit("prescriptionAdded", {
+      mrId: id,
+      prescription: savedPrescription,
+      matchResult: {
+        teamA: match.teamA,
+        teamAScore,
+        teamB: match.teamB,
+        teamBScore,
+        Result: result,
+        date: new Date().toISOString().split("T")[0],
+      },
+    });
 
     return res.status(200).json({
       success: true,
