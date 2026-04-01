@@ -4,7 +4,6 @@ const { Mr } = require("../Schema_models/MrModels");
 const { Brand } = require("../Schema_models/BrandModel");
 
 const PrescriptionController = async (req, res) => {
-
   const io = req.app.get("io"); // get io instance from app
   try {
     const { id } = req.params; // ✅ MR ID
@@ -12,7 +11,6 @@ const PrescriptionController = async (req, res) => {
     const { DrName, DrNumber, SccCode, NoOfPrescription, brand } = req.body;
 
     console.log(req.body, "here the fraction");
-    
 
     // ✅ validation
     if (!DrName || !DrNumber || !SccCode || !NoOfPrescription || !brand) {
@@ -98,46 +96,41 @@ const PrescriptionController = async (req, res) => {
       });
     }
 
-
-
     // ✅ Find the Brand here to update the points
 
-     const brandData = await Brand.findOne({
+    const brandData = await Brand.findOne({
       BrandName: brand,
     });
     console.log(brandData, "here i got the data");
-    
-    
-    if(!brandData){
+
+    if (!brandData) {
       return res.status(404).json({
         success: false,
         message: "Brand not found here",
-      })
+      });
     }
-    
+
     const points = brandData.Points; // here we get the points of the brand from the brand collections
     console.log(points, "here i got the points");
 
-    // here the scoring logic begins 
+    // here the scoring logic begins
     let runs = points;
     let fours = 0;
     let sixes = 0;
 
-    if(points >= 6){
-      sixes = Math.floor(points/ 6);
-    }
-    else if(points >= 4){
+    if (points >= 6) {
+      sixes = Math.floor(points / 6);
+    } else if (points >= 4) {
       fours = Math.floor(points / 4);
     }
 
-
-        // GET MR stats for this match only here 
+    // GET MR stats for this match only here
 
     const playerStats = mr.mrscoreEachMatch.find(
-      (m) => m.matchId.toString() === match._id.toString()
+      (m) => m.matchId.toString() === match._id.toString(),
     );
 
-    if(playerStats) {
+    if (playerStats) {
       await Mr.updateOne(
         {
           _id: id,
@@ -148,31 +141,28 @@ const PrescriptionController = async (req, res) => {
             "mrscoreEachMatch.$.stats.runs": runs,
             "mrscoreEachMatch.$.stats.sixes": sixes,
             "mrscoreEachMatch.$.stats.fours": fours,
-          }
-        }
-      )
+          },
+        },
+      );
+    } else {
+      await Mr.findByIdAndUpdate(id, {
+        $push: {
+          mrscoreEachMatch: {
+            matchId: match._id,
+            roomId: match.roomId,
+            startDate: match.startDate,
+            endDate: match.endDate,
+            stats: {
+              runs,
+              runs,
+              fours,
+              fours,
+              sixes: sixes,
+            },
+          },
+        },
+      });
     }
-    else{
-      await Mr.findByIdAndUpdate(
-        id,
-        {
-          $push: {
-            mrscoreEachMatch: {
-              matchId: match._id,
-              roomId: match.roomId,
-              startDate: match.startDate,
-              endDate: match.endDate,
-              stats: {
-                runs, runs,
-                fours, fours,
-                sixes: sixes,
-              }
-            }
-          }
-        }
-      )
-    }
-
 
     // ✅ 5. Create Prescription
     const prescription = files.map((file) => ({
@@ -186,10 +176,15 @@ const PrescriptionController = async (req, res) => {
       NoOfPrescription,
       prescription,
       Brand: brand,
+      status: "pending",
+      // ✅ ADD THIS
+      mrId: id, // ✅ save mrId
+      points: runs, // ✅ save points
+      fours: fours, // ✅ save fours
+      sixes: sixes,
     });
 
-    
-    // now update the mr stats here 
+    // now update the mr stats here
     await Mr.findByIdAndUpdate(
       id,
       {
@@ -197,10 +192,10 @@ const PrescriptionController = async (req, res) => {
           TotalRuns: runs,
           TotalFours: fours,
           TotalSixes: sixes,
-        }
+        },
       },
-      {new: true}
-    )
+      { new: true },
+    );
 
     // ✅ 6. Push into SAME MR
     await Mr.findByIdAndUpdate(
@@ -211,35 +206,35 @@ const PrescriptionController = async (req, res) => {
       { new: true },
     );
 
-
-    // Calculate Team Result on the basis Of mr 
+    // Calculate Team Result on the basis Of mr
 
     const teamAPlayers = await Mr.find({
-      _id: { $in: match.roomPlayersA},
+      _id: { $in: match.roomPlayersA },
     });
 
     const teamBPlayers = await Mr.find({
-      _id: { $in: match.roomPlayersB},
+      _id: { $in: match.roomPlayersB },
     });
 
-    const teamAScore = teamAPlayers.reduce((sum,p) => sum + (p.TotalRuns || 0 )
-    ,0);
+    const teamAScore = teamAPlayers.reduce(
+      (sum, p) => sum + (p.TotalRuns || 0),
+      0,
+    );
 
-    const teamBScore = teamBPlayers.reduce((sum,p) => sum + (p.TotalRuns || 0 )
-    ,0);
-
+    const teamBScore = teamBPlayers.reduce(
+      (sum, p) => sum + (p.TotalRuns || 0),
+      0,
+    );
 
     let result = "Draw";
 
-    if(teamAScore > teamBScore){
-      result = match.teamA
-    }
-    else if(teamBScore > teamAScore){
+    if (teamAScore > teamBScore) {
+      result = match.teamA;
+    } else if (teamBScore > teamAScore) {
       result = match.teamB;
     }
 
-
-    // Now store the match result in the match collections 
+    // Now store the match result in the match collections
 
     await CreateMatch.findByIdAndUpdate(match._id, {
       $set: {
@@ -249,17 +244,16 @@ const PrescriptionController = async (req, res) => {
           teamB: match.teamB,
           teamBScore: teamBScore,
           Result: result,
-          date:new Date().toISOString().split("T")[0],
-        }
-      }
-    })
-
+          date: new Date().toISOString().split("T")[0],
+        },
+      },
+    });
 
     // ✅ fetch FULL MR with prescription
     const updatedMR = await Mr.findById(id).populate("uploadMatches");
 
     console.log("🔥 Emitting socket event...");
-    // Add the socket io here 
+    // Add the socket io here
     io.emit("prescriptionAdded", {
       mrId: id,
       prescription: savedPrescription,
@@ -284,8 +278,7 @@ const PrescriptionController = async (req, res) => {
         teamBScore,
         Result: result,
         date: new Date().toISOString().split("T")[0],
-
-      }
+      },
     });
   } catch (error) {
     return res.status(500).json({

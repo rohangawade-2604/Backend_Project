@@ -53,6 +53,10 @@ const prescriptionSchema = new mongoose.Schema({
   Brand: {
     type: String,
     required: true
+  },
+  Status: {
+    type: String,
+    default: "Pending"
   }
 }, { timestamps: true });
 
