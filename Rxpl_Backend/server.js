@@ -24,7 +24,9 @@ const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
         origin: "*",
-    }
+        
+    },
+    transports: ["websocket", "polling"], 
 })
 
 // make io globally acccesable 
