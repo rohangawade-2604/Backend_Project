@@ -216,15 +216,20 @@ const PrescriptionController = async (req, res) => {
       _id: { $in: match.roomPlayersB },
     });
 
-    const teamAScore = teamAPlayers.reduce(
-      (sum, p) => sum + (p.TotalRuns || 0),
-      0,
-    );
+    // Calculate Match Score and Start the new match with zero 
+    const teamAScore = teamAPlayers.reduce((sum, player) => {
+      const matchStats = player.mrscoreEachMatch.find(
+        (m) => m.matchId.toString() === match._id.toString()
+      );
+      return sum + (matchStats?.stats?.runs || 0);
+    }, 0);
 
-    const teamBScore = teamBPlayers.reduce(
-      (sum, p) => sum + (p.TotalRuns || 0),
-      0,
-    );
+    const teamBScore = teamBPlayers.reduce((sum, player) => {
+      const matchStats = player.mrscoreEachMatch.find(
+        (m) => m.matchId.toString() === match._id.toString()
+      );
+      return sum + (matchStats?.stats?.runs || 0);
+    }, 0);
 
     let result = "Draw";
 
