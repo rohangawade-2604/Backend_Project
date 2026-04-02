@@ -75,10 +75,6 @@ const MRSchema = new Schema({
         default: Date.now,
       }
     },
-
-    
-
-
   ]
 });
 

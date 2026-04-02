@@ -153,16 +153,40 @@ const PrescriptionController = async (req, res) => {
             startDate: match.startDate,
             endDate: match.endDate,
             stats: {
-              runs,
-              runs,
-              fours,
-              fours,
+              runs: runs,
+              fours: fours,
               sixes: sixes,
             },
           },
         },
       });
     }
+
+    // ✅ 7. 🔥 RECALCULATE TOTALS FROM MATCH DATA
+    const updatedMr = await Mr.findById(id);
+
+    const totalRuns = updatedMr.mrscoreEachMatch.reduce(
+      (sum, m) => sum + (m.stats?.runs || 0),
+      0,
+    );
+
+    const totalSixes = updatedMr.mrscoreEachMatch.reduce(
+      (sum, m) => sum + (m.stats?.sixes || 0),
+      0,
+    );
+
+    const totalFours = updatedMr.mrscoreEachMatch.reduce(
+      (sum, m) => sum + (m.stats?.fours || 0),
+      0,
+    );
+
+    await Mr.findByIdAndUpdate(id, {
+      $set: {
+        TotalRuns: totalRuns,
+        TotalSixes: totalSixes,
+        TotalFours: totalFours,
+      },
+    });
 
     // ✅ 5. Create Prescription
     const prescription = files.map((file) => ({
@@ -184,18 +208,7 @@ const PrescriptionController = async (req, res) => {
       sixes: sixes,
     });
 
-    // now update the mr stats here
-    await Mr.findByIdAndUpdate(
-      id,
-      {
-        $inc: {
-          TotalRuns: runs,
-          TotalFours: fours,
-          TotalSixes: sixes,
-        },
-      },
-      { new: true },
-    );
+ 
 
     // ✅ 6. Push into SAME MR
     await Mr.findByIdAndUpdate(
@@ -216,17 +229,17 @@ const PrescriptionController = async (req, res) => {
       _id: { $in: match.roomPlayersB },
     });
 
-    // Calculate Match Score and Start the new match with zero 
+    // Calculate Match Score and Start the new match with zero
     const teamAScore = teamAPlayers.reduce((sum, player) => {
       const matchStats = player.mrscoreEachMatch.find(
-        (m) => m.matchId.toString() === match._id.toString()
+        (m) => m.matchId.toString() === match._id.toString(),
       );
       return sum + (matchStats?.stats?.runs || 0);
     }, 0);
 
     const teamBScore = teamBPlayers.reduce((sum, player) => {
       const matchStats = player.mrscoreEachMatch.find(
-        (m) => m.matchId.toString() === match._id.toString()
+        (m) => m.matchId.toString() === match._id.toString(),
       );
       return sum + (matchStats?.stats?.runs || 0);
     }, 0);
