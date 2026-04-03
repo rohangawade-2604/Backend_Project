@@ -208,8 +208,6 @@ const PrescriptionController = async (req, res) => {
       sixes: sixes,
     });
 
- 
-
     // ✅ 6. Push into SAME MR
     await Mr.findByIdAndUpdate(
       id, // MR _id from params

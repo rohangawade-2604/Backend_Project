@@ -11,12 +11,25 @@ const PlayersLeaderBoard = async (req, res) => {
      const leaderboard = mrs.map((mr, index) => {
       const matches = mr.mrscoreEachMatch || [];
 
+      let score = 0;
+      let totalFours = 0;
+      let totalSixes = 0;
+
+      matches.forEach((match) => {
+        score += match?.stats?.runs || 0;
+        totalFours += match?.stats?.fours || 0;
+        totalSixes += match?.stats?.sixes || 0;
+      })
+
       return {
         MRName: mr.MRName,
         TeamName: mr.TeamName,
         totalRuns: mr.TotalRuns || 0,
         MatchesPlayed: matches.length, // ✅ correct
-        rank: index + 1
+        score,
+        totalFours,
+        totalSixes,
+        rank: index + 1,
       };
     });
 
