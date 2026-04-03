@@ -2,7 +2,7 @@ const { Mr } = require("../Schema_models/MrModels");
 
 const PlayersLeaderBoard = async (req, res) => {
   try {
-    const mrs = await Mr.find({}, "MRName TeamName TotalRuns mrscoreEachMatch");
+    const mrs = await Mr.find({}, "MRName TeamName TotalRuns mrscoreEachMatch ");
 
     // sort by TotalRuns
     mrs.sort((a, b) => (b.TotalRuns || 0) - (a.TotalRuns || 0));
@@ -11,10 +11,12 @@ const PlayersLeaderBoard = async (req, res) => {
      const leaderboard = mrs.map((mr, index) => {
       const matches = mr.mrscoreEachMatch || [];
 
+      // get the mreachMatchScore here 
       let score = 0;
       let totalFours = 0;
       let totalSixes = 0;
 
+      // get them here 
       matches.forEach((match) => {
         score += match?.stats?.runs || 0;
         totalFours += match?.stats?.fours || 0;
@@ -22,6 +24,7 @@ const PlayersLeaderBoard = async (req, res) => {
       })
 
       return {
+        rank: index + 1,
         MRName: mr.MRName,
         TeamName: mr.TeamName,
         totalRuns: mr.TotalRuns || 0,
@@ -29,7 +32,6 @@ const PlayersLeaderBoard = async (req, res) => {
         score,
         totalFours,
         totalSixes,
-        rank: index + 1,
       };
     });
 
