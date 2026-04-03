@@ -39,6 +39,13 @@ const AdminLogin = async (req, res) => {
       }
     }
 
+    if(!user) {
+        user = await Mr.findOne({ MRID: id});
+        if(user){
+            role = "MR"
+        }
+    }
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -47,7 +54,7 @@ const AdminLogin = async (req, res) => {
     }
 
     const userpassword =
-      user.TLMPassword || user.SLMPassword || user.FLMPassword;
+      user.TLMPassword || user.SLMPassword || user.FLMPassword || user.MRPassword;
 
     if (userpassword !== password) {
       return res.status(401).json({
