@@ -14,6 +14,8 @@ const getPrescriptionRoutes = require("./src/Routes/getPrescriptionRoutes");
 const updateStatusRoutes = require("./src/Routes/updateStatusRoutes");
 const profileRoutes = require("./src/Routes/ProfileRouter")
 const lastfiveRoutes = require("./src/Routes/LastfiveRoutes")
+const PlayerRoutes = require("./src/Routes/PlayersRoutes")
+const TeamRankRouter = require("./src/Routes/TeamRankRoutes")
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
@@ -54,7 +56,8 @@ app.use("/api", getPrescriptionRoutes);
 app.use("/api", updateStatusRoutes);
 app.use("/api",profileRoutes);
 app.use("/api", lastfiveRoutes);
-
+app.use("/api", PlayerRoutes);
+app.use("/api", TeamRankRouter);
 
 
 app.get("/", (req, res) => {
