@@ -16,6 +16,7 @@ const profileRoutes = require("./src/Routes/ProfileRouter")
 const lastfiveRoutes = require("./src/Routes/LastfiveRoutes")
 const PlayerRoutes = require("./src/Routes/PlayersRoutes")
 const TeamRankRouter = require("./src/Routes/TeamRankRoutes")
+const AdminLoginRoutes = require("./src/Routes/AdminloginRoutes")
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
@@ -58,6 +59,7 @@ app.use("/api",profileRoutes);
 app.use("/api", lastfiveRoutes);
 app.use("/api", PlayerRoutes);
 app.use("/api", TeamRankRouter);
+app.use("/api", AdminLoginRoutes);
 
 
 app.get("/", (req, res) => {
