@@ -17,6 +17,8 @@ const lastfiveRoutes = require("./src/Routes/LastfiveRoutes")
 const PlayerRoutes = require("./src/Routes/PlayersRoutes")
 const TeamRankRouter = require("./src/Routes/TeamRankRoutes")
 const AdminLoginRoutes = require("./src/Routes/AdminloginRoutes")
+const AdminLogout = require("./src/Routes/logoutRoutes");
+const { LiveUser } = require("./src/Schema_models/UserLiveModel");
 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
@@ -40,10 +42,18 @@ const io = new Server(server, {
 app.set("io", io);
 
 // socket connections 
-io.on("connection", (socket) => {
+io.on("connection", async(socket) => {
     console.log("Client connections is being successfully", socket.id);
 
-    socket.on("disconnect", () => {
+    const liveUser = await LiveUser.find({});
+    socket.emit("liveUser", liveUser)
+
+    socket.on("getLiveUsers", async() => {
+        const liveUsers = await LiveUser.find({})
+        io.emit("liveUsers",liveUsers)
+    })
+
+    socket.on("disconnect", async() => {
         console.log("Client disconnected", socket.id);
     });
 })
@@ -60,6 +70,7 @@ app.use("/api", lastfiveRoutes);
 app.use("/api", PlayerRoutes);
 app.use("/api", TeamRankRouter);
 app.use("/api", AdminLoginRoutes);
+app.use("/api", AdminLogout);
 
 
 app.get("/", (req, res) => {

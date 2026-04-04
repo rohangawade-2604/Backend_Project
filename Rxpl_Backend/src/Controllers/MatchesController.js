@@ -32,6 +32,11 @@ const createMatchFromExcel = async (req, res) => {
       return `${day}-${month}-${year}`;
     }
 
+    function parseDDMMYYYY(str){
+      const [day, month, year] = str.split("-")
+      return new Date(year, month -1, day);
+    }
+
     let results = [];
 
     for (let row of data) {

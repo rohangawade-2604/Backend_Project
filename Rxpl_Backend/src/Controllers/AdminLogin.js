@@ -2,7 +2,7 @@ const { Flm } = require("../Schema_models/FlmModels");
 const { Slm } = require("../Schema_models/SlmModels");
 const { Tlm } = require("../Schema_models/TlmModels");
 const { Mr } = require("../Schema_models/MrModels");
-
+const { LiveUser } = require("../Schema_models/UserLiveModel");
 const AdminLogin = async (req, res) => {
   try {
     const { id, password } = req.body;
@@ -16,11 +16,13 @@ const AdminLogin = async (req, res) => {
 
     let user = null;
     let role = "";
+    let Username = "";
 
     // ✅ Check TLM first
     user = await Tlm.findOne({ TLMID: id });
     if (user) {
       role = "TLM";
+      Username = user.TLMName;
     }
 
     // ✅ Check SLM only if not found
@@ -28,6 +30,7 @@ const AdminLogin = async (req, res) => {
       user = await Slm.findOne({ SLMID: id });
       if (user) {
         role = "SLM";
+        Username = user.SLMName;
       }
     }
 
@@ -36,14 +39,16 @@ const AdminLogin = async (req, res) => {
       user = await Flm.findOne({ FLMID: id });
       if (user) {
         role = "FLM";
+        Username = user.FLMName;
       }
     }
 
-    if(!user) {
-        user = await Mr.findOne({ MRID: id});
-        if(user){
-            role = "MR"
-        }
+    if (!user) {
+      user = await Mr.findOne({ MRID: id });
+      if (user) {
+        role = "MR";
+        Username = user.MRName;
+      }
     }
 
     if (!user) {
@@ -54,7 +59,10 @@ const AdminLogin = async (req, res) => {
     }
 
     const userpassword =
-      user.TLMPassword || user.SLMPassword || user.FLMPassword || user.MRPassword;
+      user.TLMPassword ||
+      user.SLMPassword ||
+      user.FLMPassword ||
+      user.MRPassword;
 
     if (userpassword !== password) {
       return res.status(401).json({
@@ -62,6 +70,21 @@ const AdminLogin = async (req, res) => {
         message: "Invalid password",
       });
     }
+
+    // Insert into the liveUsers collections
+    await LiveUser.findOneAndUpdate(
+      { userId: id },
+      {
+        userId: id,
+        Username,
+        role,
+        status: true,
+      },
+      { upsert: true, new: true },
+    );
+
+      const allUsers = await LiveUser.find({});
+      req.app.get("io").emit("liveUsers", allUsers);
 
     return res.status(200).json({
       success: true,
