@@ -95,6 +95,8 @@ const createMatchFromExcel = async (req, res) => {
         teamB,
         startDate,
         endDate,
+        startDateSort: parseDDMMYYYY(startDate),  // hidden field for sorting only used in it
+        endDateSort: parseDDMMYYYY(endDate),  // hidden field for sorting only used in it
         roomPlayers, // FULL players
         roomPlayersA: teamsAId,
         roomPlayersB: teamsBId,
@@ -156,10 +158,15 @@ const createMatchFromExcel = async (req, res) => {
     //   { isMatchOn: false }
     // )
 
+    const sortedMatches = await CreateMatch.find({})
+      .sort({ startDateSort: 1, endDateSort: 1 })
+      .select("-startDateSort -endDateSort");
+
     return res.status(200).json({
       success: true,
       message: "Matches created Successfully",
-      data: results,
+      // data: results,
+      data: sortedMatches,
     });
 
     console.log(data, "here the data comes");
